@@ -10,6 +10,13 @@ agnostic because it talks to xlib directly to get its window information.  This
 is bar agnostic because it doesn't assume anything about which bar you're using
 - it simply pipes out env vars for other scripts to consume.
 
+# Installation
+
+1. Install ruby.  If you're looking for a version manager, I recommend asdf.
+2. Clone this repo and cd into it.
+3. Run `bundle` to install required dependencies.
+4. `./workspaces.rb`
+
 # Roadmap (using the term extremely loosely)
 
 ## Phase 0
