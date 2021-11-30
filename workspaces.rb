@@ -43,43 +43,28 @@ class Event
   end
 end
 
-class YambarFormatter
+class ShellFormatter
   def workspaces(workspaces_hash)
-    begin
-      workspaces_hash.map do |id, workspace|
-        workspace(id, workspace)
-      end.flatten.join "\n"
-    end + "\n\n"
-  end
+    workspace_list = workspaces_hash.keys.join(' ')
+    ws_list = "WS_LIST='#{workspace_list}'"
 
-  private
-
-  def workspace(id, ws)
-    [
-      "workspace-#{id}-state|string|#{ws.state}",
-      "workspace-#{id}-name|string|#{ws.name}"
-    ]
-  end
-end
-
-class Formatter
-  def initialize(cfg)
-    @cfg = cfg
-  end
-
-  def workspaces(workspaces_hash)
-    workspaces_hash.map do |id, workspace|
+    ws_info = workspaces_hash.flat_map do |id, workspace|
       workspace(id, workspace)
-    end.join(@cfg.delimiter)
+    end
+
+    [ws_list, *ws_info].join(' ')
   end
 
   private
 
   def workspace(id, workspace)
-    pre = "pre_#{workspace.state}"
-    post = "post_#{workspace.state}"
-    name = @cfg.ws_name(id) || workspace.name
-    [@cfg.send(pre), name, @cfg.send(post)].join
+    state_var = "WS_#{id}_STATE"
+    name_var  = "WS_#{id}_NAME"
+
+    [
+      "#{state_var}=#{workspace.state}",
+      "#{name_var}=#{workspace.name}"
+    ]
   end
 end
 
@@ -89,11 +74,7 @@ class Cli
   def initialize
     @display = XlibObj::Display.new(':0')
     @root = Root.new(@display)
-    @formatter = if ARGV.include?('--yambar')
-                   YambarFormatter.new
-                 else
-                   Formatter.new(Configuration.new)
-                 end
+    @formatter = ShellFormatter.new
   end
 
   def main
@@ -116,7 +97,8 @@ class Cli
       if    window.urgent?  then ws.urgent!
       elsif window.focused? then ws.focus!
       elsif window.visible? then ws.visible!
-      else  ws.occupied!
+      else
+        ws.occupied!
       end
     end
 
@@ -279,41 +261,6 @@ class Window
     root = @display.screens.first.root_window
     all_windows = root.property(:_NET_CLIENT_LIST_STACKING) || root.property(:_NET_CLIENT_LIST)
     Array(all_windows).map(&:id).include?(@window.id)
-  end
-end
-
-# TODO: rip this out.  output becomes:
-# WORKSPACES=WORKSPACE1,WORKSPACE2,... WORKSPACE1=focused WORKSPACE2=visible etc
-# parse it in bash
-class Configuration
-  attr_reader :delimiter, :pre_urgent, :post_urgent, :pre_visible,
-              :post_visible, :pre_occupied, :post_occupied, :pre_empty, :post_empty, :pre_focused, :post_focused
-
-  def initialize
-    @delimiter = ' '
-    @workspaces = Array.new(10, &:itself).zip(Array.new(10).fill('⚫')).to_h # hash of ws id => name
-
-    @pre_urgent = '%{F#ff5500}'
-    @post_urgent = '%{F-}'
-
-    # TODO: visible and focused
-    # focused visible windows are one thing. what if looking at root win?
-
-    @pre_visible = '%{F#ff00ff}'
-    @post_visible = '%{F-}'
-
-    @pre_visible = '%{F#ffffff}'
-    @post_visible = '%{F-}'
-
-    @pre_occupied = '%{F#777777}'
-    @post_occupied = '%{F-}'
-
-    @pre_empty = '%{F#333333}'
-    @post_empty = '%{F-}'
-  end
-
-  def ws_name(ws)
-    @workspaces[ws]
   end
 end
 

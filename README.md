@@ -17,6 +17,20 @@ is bar agnostic because it doesn't assume anything about which bar you're using
 3. Run `bundle` to install required dependencies.
 4. `./workspaces.rb`
 
+# Usage
+
+`workspaces.rb` reads your x11 windows and emits shell vars describing what's
+going on in each workspace.  This is pretty useless on its own, so you'll have
+to pipe it into another executable to format it for your bar of choice.
+
+A few sample scripts are included to demonstrate how to format output.  E.g.
+`workspaces.rb | scripts/wm-formatter-polybar.sh`
+
+Foreground colors can be overridden via the EMPTY_COLOR, VISIBLE_COLOR,
+OCCUPIED_COLOR, URGENT_COLOR, FOCUSED_COLOR env vars.
+
+For anything more complex, write your own script.
+
 # Roadmap (using the term extremely loosely)
 
 ## Phase 0
