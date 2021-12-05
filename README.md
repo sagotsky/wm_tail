@@ -15,16 +15,16 @@ is bar agnostic because it doesn't assume anything about which bar you're using
 1. Install ruby.  If you're looking for a version manager, I recommend asdf.
 2. Clone this repo and cd into it.
 3. Run `bundle` to install required dependencies.
-4. `./workspaces.rb`
+4. `./wm_tail.rb`
 
 # Usage
 
-`workspaces.rb` reads your x11 windows and emits shell vars describing what's
+`wm_tail.rb` reads your x11 windows and emits shell vars describing what's
 going on in each workspace.  This is pretty useless on its own, so you'll have
 to pipe it into another executable to format it for your bar of choice.
 
 A few sample scripts are included to demonstrate how to format output.  E.g.
-`workspaces.rb | scripts/wm-formatter-polybar.sh`
+`wm_tail.rb | scripts/wm-formatter-polybar.sh`
 
 Foreground colors can be overridden via the EMPTY_COLOR, VISIBLE_COLOR,
 OCCUPIED_COLOR, URGENT_COLOR, FOCUSED_COLOR env vars.
@@ -36,7 +36,7 @@ For anything more complex, write your own script.
 ## Phase 0
 
 - [x] Write readme
-- [ ] Import workspaces.rb
+- [x] Import wm_tail.rb
 
 ## Phase 1
 - [ ] Clean up ruby
