@@ -4,7 +4,7 @@ lemonbar_fg() {
   color="$1"
   shift
 
-  printf "%%{F%s} %s %%{F-}" "$color" "$@"
+  printf "%%{F%s}%s %%{F-}" "$color" "$@"
 }
 
 format_empty()    { lemonbar_fg "#${EMPTY_COLOR:-333333}"    "$1" ;}
