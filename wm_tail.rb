@@ -102,7 +102,10 @@ class Cli
       end
     end
 
-    puts @formatter.workspaces(all)
+    # puts @formatter.root(@root)
+    output = @formatter.workspaces(all)
+    puts output unless output == @_last_output
+    @_last_output = output
   end
 end
 
