@@ -4,7 +4,13 @@ lemonbar_fg() {
   color="$1"
   shift
 
-  printf "%%{F%s}%s %%{F-}" "$color" "$@"
+  # Default label: workspace name
+  # Can override all with WS_ICON
+  # Can override specific with WS_ICON_N (for N = 0-9)
+
+  icon_var="WS_ICON_$*"
+  icon="${!icon_var:-${WS_ICON:-$@}}"
+  printf "%%{F%s}%s %%{F-}" "$color" "$icon"
 }
 
 format_empty()    { lemonbar_fg "#${EMPTY_COLOR:-333333}"    "$1" ;}
